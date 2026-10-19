@@ -44,3 +44,5 @@ streamlit run app.py
 - Greedy allocation is a heuristic, not a guaranteed optimum.
 - Vehicles are assumed to be at their last drop-off point when a disruption happens (no mid-route positions).
 - Food redistribution optimisation is an existing research area; this project is a small, explainable implementation.
+
+🌐 Live Demo: https://ocean1621.github.io/FoodBridge-AI/
