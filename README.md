@@ -1,4 +1,5 @@
 # FoodBridge AI - Intelligent Food Redistribution
+🌐 Live Demo: https://ocean1621.github.io/FoodBridge-AI/
 
 An AI planning system that decides **where surplus food should go, which vehicle carries it, and which route it takes**,
 and **replans automatically** when something goes wrong (vehicle breakdown, recipient cancels, urgent donation arrives).
