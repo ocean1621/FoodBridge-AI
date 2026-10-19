@@ -54,19 +54,19 @@ footer{border-top:1px solid var(--ln);padding:34px 18px;color:var(--mu);font-siz
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body>
 <header><div class="nv"><a class="lg" href="#/home">🍲 FoodBridge <span>AI</span></a>
-<nav class="lk"><a href="#/problem">The Problem</a><a href="#/product">Product</a><a href="#/features">Features</a><a href="#/case">Case Study</a><a href="#/plans">Plans</a><a href="#/faq">FAQ</a><a href="#/platform">Live Platform</a></nav>
+<nav class="lk"><a href="#/problem">The Problem</a><a href="#/product">Product</a><a href="#/features">Features</a><a href="#/case">Case Study</a><a href="#/plans">Plans</a><a href="#/faq">FAQ</a><a href="#/platform">Use It</a></nav>
 <a class="bt hd-d" href="#/contact">Book a Demo</a><button class="ib" title="Toggle theme" onclick="tg()">🌓</button><button class="ib" title="Menu" onclick="document.body.classList.add('op')">☰</button></div></header>
 <div id="ov" onclick="closeD()"></div>
 <aside id="dr"><div style="display:flex;justify-content:space-between;align-items:center"><b>Menu</b><button class="ib" onclick="closeD()">✕</button></div>
 <h4>Choose theme</h4><div class="th"><button data-t="auto" onclick="th('auto')">🖥️ Auto</button><button data-t="light" onclick="th('light')">☀️ Light</button><button data-t="dark" onclick="th('dark')">🌙 Dark</button><button data-t="leaf" onclick="th('leaf')">🌿 Leaf</button></div>
-<h4>Explore</h4><a href="#/home">Home</a><a href="#/problem">The Problem</a><a href="#/product">Product</a><a href="#/features">Features</a><a href="#/case">Case Study</a><a href="#/plans">Plans</a><a href="#/faq">FAQ</a><a href="#/platform">⚡ Live Platform</a>
+<h4>Explore</h4><a href="#/home">Home</a><a href="#/problem">The Problem</a><a href="#/product">Product</a><a href="#/features">Features</a><a href="#/case">Case Study</a><a href="#/plans">Plans</a><a href="#/faq">FAQ</a><a href="#/platform">⚡ Use It</a>
 <h4>Get in touch</h4><a href="#/contact">📞 Contact us</a><a href="#/contact">📅 Book a free demo</a></aside>
 <main id="m"></main>
 <footer><div class="fi"><div><b>🍲 FoodBridge AI</b><p>AI-powered food redistribution for restaurants, retailers and NGOs.</p></div>
-<div><b>Platform</b><a href="#/product">Product</a><a href="#/features">Features</a><a href="#/plans">Plans</a><a href="#/platform">Live Platform</a></div>
+<div><b>Platform</b><a href="#/product">Product</a><a href="#/features">Features</a><a href="#/plans">Plans</a><a href="#/platform">Use It</a></div>
 <div><b>Company</b><a href="#/case">Case Study</a><a href="#/faq">FAQ</a><a href="#/contact">Contact</a></div>
 <div><b>Contact</b><p>hello@foodbridge-demo.in<br>+91 90000 12345<br>Plot 21, Tech Park Road, Phase 2, Coimbatore, Tamil Nadu 641001</p></div></div>
-<p style="max-width:1150px;margin:18px auto 0">© 2026 FoodBridge AI · Academic prototype — all names, numbers and addresses are fictional.</p></footer>
+<p style="max-width:1150px;margin:18px auto 0">© 2026 FoodBridge AI · Academic prototype</p></footer>
 <script>
 const $=s=>document.querySelector(s);
 //CORE-START
@@ -151,7 +151,7 @@ const cta=()=>`<section class="cta rv"><div><h2>Ready to Eliminate Food Waste?</
 const steps=a=>a.map(([t,d],i)=>`<div class="cd rv stp" style="margin:12px 0"><i>${i+1}</i><div><h3>${t}</h3><p>${d}</p></div></div>`).join("");
 /* ---------- pages ---------- */
 const home=()=>hero("Intelligent food redistribution","Surplus food. Hungry communities. <span style='color:var(--ac)'>One smart network.</span>","FoodBridge AI matches surplus from restaurants, bakeries and stores with the people who need it — before it spoils — and replans in seconds when something goes wrong.",
-`<div class="sp"><a class="bt" href="#/contact">Book a free demo</a><a class="bt o" href="#/platform">Try the live platform →</a></div>
+`<div class="sp"><a class="bt" href="#/contact">Book a free demo</a><a class="bt o" href="#/platform">Use It →</a></div>
 <svg class="hv" viewBox="0 0 420 220"><g stroke="var(--ac)" stroke-width="2" fill="none" stroke-dasharray="5 6"><path id="p1" d="M50 40C150 40 150 110 210 110S320 60 370 50"/><path id="p2" d="M50 110H370"/><path id="p3" d="M50 180C150 180 160 120 210 110S320 170 370 175"/></g>
 ${["p1","p2","p3"].map((p,i)=>`<circle r="6" fill="var(--ac2)"><animateMotion dur="${3+i}s" repeatCount="indefinite"><mpath href="#${p}"/></animateMotion></circle>`).join("")}
 <g font-size="22" text-anchor="middle"><circle cx="40" cy="40" r="22" fill="var(--cd)" stroke="var(--ln)"/><text x="40" y="48">🍽️</text><circle cx="40" cy="110" r="22" fill="var(--cd)" stroke="var(--ln)"/><text x="40" y="118">🥖</text><circle cx="40" cy="180" r="22" fill="var(--cd)" stroke="var(--ln)"/><text x="40" y="188">🍎</text>
@@ -170,7 +170,7 @@ const plans=()=>hero("Plans","Pay for impact, not paperwork","Free for NGOs. Sim
 `<div class="g">${[["Community","₹0","for NGOs & shelters",["Receive donations & alerts","Basic dashboard","WhatsApp notifications"],"Start free"],["Business","₹2,499","for restaurants, caterers & retailers",["Everything in Community","Smart matching & A* routing","Waste & impact reports","Priority support"],"Start 14-day trial",1],["Network","Custom","for city-scale operations",["Everything in Business","Fair-mode analytics","Multi-city fleets","API & ERP integration"],"Talk to us"]].map(([n,p,s,f,b,h])=>`<div class="cd rv ${h?"hot":""}">${h?"<small style='color:var(--ac);font-weight:700'>MOST POPULAR</small>":""}<h3>${n}</h3><div class="pr">${p}<small>${p[0]=="₹"?" / month":""}</small></div><p>${s}</p><ul style="color:var(--mu);padding-left:18px">${f.map(x=>`<li>${x}</li>`).join("")}</ul><a class="bt ${h?"":"o"}" style="display:block;text-align:center" href="#/contact">${b}</a></div>`).join("")}</div>`+cta();
 const faq=()=>hero("FAQ","Frequently Asked Questions","Quick answers about how FoodBridge AI works.")+[["What is FoodBridge AI?","An AI planning platform that matches surplus food with recipients, routes vehicles, and replans when disruptions happen."],["Does it use machine learning?","The core planner uses classical AI: constraint checking, greedy heuristics, A* search and goal-based replanning, so every decision is explainable."],["How does Fair mode work?","It scores each recipient by unmet need and distance, so a far-away shelter with nothing isn’t ignored in favor of a nearby one that is mostly served."],["What happens if a vehicle breaks down?","Completed deliveries stay final. The undelivered food returns to the pool and the AI rebuilds the plan, flagging anything now at risk."],["How is food safety handled?","Every lot has an expiry deadline and a delivery is only planned if it can arrive in time. Real deadlines depend on food type and handling conditions."],["What is a free demo?","A 30-minute live walkthrough with our team using your own scenario. It costs nothing and needs no card."],["Is the data real?","This is an academic prototype running on synthetic data."]].map(([q,a])=>`<details class="rv"><summary>${q}</summary><p>${a}</p></details>`).join("")+cta();
 const contact=()=>hero("Contact us","Let’s talk about your food network","Book a demo or reach us directly. We usually reply within one working day.")+`<div class="g">${demo()}<div class="cd"><h3>Reach us</h3><p>📧 hello@foodbridge-demo.in<br>📞 +91 90000 12345 (24×7 support)<br>📍 Plot 21, Tech Park Road, Phase 2, Coimbatore, Tamil Nadu 641001</p></div></div>`;
-const platform=()=>hero("Live Platform","The AI planner, running in your browser","Switch objectives, trigger disruptions and watch the plan rebuild. Same logic as the Python project, ported to JavaScript.")+'<div id="pl"></div>';
+const platform=()=>hero("Use It","The AI planner, running in your browser","Switch objectives, trigger disruptions and watch the plan rebuild. Same logic as the Python project, ported to JavaScript.")+'<div id="pl"></div>';
 /* ---------- live platform ---------- */
 const tb=(h,r)=>`<div class="tw"><table><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr>${r.map(x=>`<tr>${x.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</table></div>`;
 function draw(){const P=S.plan,m=met(S,P),all=[...S.done,...P.d],rk=P.d.filter(d=>d.s=="failed").reduce((a,d)=>a+d.q,0)+P.ua.reduce((a,u)=>a+u.q,0),g={};
