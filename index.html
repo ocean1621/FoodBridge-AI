@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>FoodBridge AI — Intelligent Food Redistribution</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+*{box-sizing:border-box}
+:root{--bg:#f7faf5;--fg:#17211b;--mu:#58665e;--cd:#fff;--ln:#dfe6e0;--ac:#16a34a;--ac2:#f59e0b;--bd:#dc2626;--hd:rgba(247,250,245,.88);color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="leaf"]){--bg:#0e1411;--fg:#e8f0ea;--mu:#9fb0a5;--cd:#16201b;--ln:#26342d;--hd:rgba(14,20,17,.88);color-scheme:dark}}
+:root[data-theme=dark]{--bg:#0e1411;--fg:#e8f0ea;--mu:#9fb0a5;--cd:#16201b;--ln:#26342d;--hd:rgba(14,20,17,.88);color-scheme:dark}
+:root[data-theme=leaf]{--bg:#e6f4dd;--fg:#12331c;--mu:#3f6247;--cd:#f5fff0;--ln:#bfdcb2;--ac:#2f7d32;--hd:rgba(230,244,221,.9)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--hd);backdrop-filter:blur(10px)}
+a{color:inherit;text-decoration:none}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--hd);backdrop-filter:blur(10px);border-bottom:1px solid var(--ln)}
+.nv{max-width:1150px;margin:auto;padding:10px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.lg{font-weight:800;font-size:19px;margin-right:auto}.lg span{color:var(--ac)}
+.lk{display:flex;gap:4px}.lk a{padding:6px 11px;border-radius:99px;font-size:14px;color:var(--mu)}.lk a:hover,.lk a.on{background:var(--cd);color:var(--fg)}
+.bt{background:var(--ac);color:#fff;border:0;border-radius:99px;padding:10px 20px;font:600 15px inherit;cursor:pointer;transition:.2s}.bt:hover{transform:translateY(-2px);box-shadow:0 8px 20px #16a34a44}
+.bt.o{background:transparent;color:var(--fg);border:1.5px solid var(--ln)}
+.ib{background:var(--cd);border:1px solid var(--ln);color:var(--fg);border-radius:10px;width:40px;height:40px;font-size:18px;cursor:pointer}
+@media(max-width:940px){.lk{order:5;width:100%;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;padding-bottom:2px}}@media(max-width:520px){.hd-d{display:none}}
+#ov{position:fixed;inset:0;background:#0007;z-index:40;opacity:0;pointer-events:none;transition:.3s}
+#dr{position:fixed;top:0;right:0;bottom:0;width:300px;max-width:88vw;background:var(--cd);z-index:50;transform:translateX(105%);transition:.35s;padding:calc(20px + env(safe-area-inset-top,0px)) 20px 20px;overflow:auto;border-left:1px solid var(--ln)}
+body.op #dr{transform:none}body.op #ov{opacity:1;pointer-events:auto}
+#dr h4{margin:18px 0 8px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
+#dr a{display:block;padding:10px 12px;border-radius:10px}#dr a:hover{background:var(--bg)}
+.th{display:grid;grid-template-columns:1fr 1fr;gap:8px}.th button{padding:10px;border-radius:10px;border:1.5px solid var(--ln);background:var(--bg);color:var(--fg);cursor:pointer;font:inherit}.th button.on{border-color:var(--ac);background:var(--ac);color:#fff}
+main{max-width:1150px;margin:auto;padding:0 18px 60px;min-height:70vh}
+.hr{padding:64px 0 28px;position:relative}.hr small{color:var(--ac);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+h1{font-size:clamp(32px,5.5vw,58px);line-height:1.08;margin:10px 0 16px;letter-spacing:-.02em}h2{font-size:clamp(24px,3.4vw,36px);margin:56px 0 8px}h3{margin:6px 0}
+.mu,.hr p{color:var(--mu);max-width:680px;font-size:18px}
+.bl{position:absolute;z-index:-1;border-radius:50%;filter:blur(70px);opacity:.35;animation:fl 9s ease-in-out infinite}
+@keyframes fl{50%{transform:translate(30px,-26px) scale(1.12)}}
+.hv{width:100%;max-width:520px;margin-top:20px}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:18px}
+.cd{background:var(--cd);border:1px solid var(--ln);border-radius:18px;padding:22px;transition:.25s}.cd:hover{transform:translateY(-4px);box-shadow:0 12px 30px #0000001a}
+.cd p{color:var(--mu);margin:6px 0 0}.ic{font-size:28px;display:block}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s}.rv.in{opacity:1;transform:none}
+.st{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:30px}.st .cd{text-align:center}.st b{font-size:38px;color:var(--ac);display:block}
+.sp{display:flex;gap:14px;flex-wrap:wrap;margin-top:20px}
+.stp{display:flex;gap:16px;align-items:flex-start}.stp i{flex:none;width:42px;height:42px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center;font-style:normal;font-weight:800}
+.ba{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}.ba ul{padding-left:20px;color:var(--mu)}.bad{border-top:4px solid var(--bd)}.gd{border-top:4px solid var(--ac)}
+.cta{margin-top:56px;background:linear-gradient(135deg,var(--ac),#0d7a37);color:#fff;border-radius:26px;padding:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px}
+.cta h2{margin-top:0}.cta li{margin:6px 0}.cta .cd{color:var(--fg)}
+.form input{display:block;width:100%;margin:10px 0;padding:12px 14px;border-radius:12px;border:1.5px solid var(--ln);background:var(--bg);color:var(--fg);font:inherit}
+.er{color:var(--bd);font-weight:600}.okc{width:56px;height:56px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center;font-size:28px;animation:pp .5s}@keyframes pp{from{transform:scale(0)}}
+.pr{font-size:36px;font-weight:800}.pr small{font-size:14px;color:var(--mu);font-weight:400}.hot{border:2px solid var(--ac)}
+details{background:var(--cd);border:1px solid var(--ln);border-radius:14px;padding:16px 20px;margin:10px 0}summary{cursor:pointer;font-weight:600}details p{color:var(--mu)}
+footer{border-top:1px solid var(--ln);padding:34px 18px;color:var(--mu);font-size:14px}.fi{max-width:1150px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:22px}.fi a{display:block;padding:2px 0}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px;background:var(--cd);border-radius:12px}th,td{padding:7px 10px;border-bottom:1px solid var(--ln);text-align:left;vertical-align:top}th{color:var(--mu);font-weight:600}
+.ct{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}.ct select,.ct input[type=range]{padding:8px;border-radius:10px;border:1.5px solid var(--ln);background:var(--cd);color:var(--fg);font:inherit}
+.mt{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:12px 0}.mt div{background:var(--cd);border:1px solid var(--ln);border-radius:14px;padding:10px 14px}.mt b{font-size:22px;display:block}
+.mp{width:100%;max-height:560px;background:var(--cd);border:1px solid var(--ln);border-radius:16px}.sm{font-size:13px;color:var(--mu)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<header><div class="nv"><a class="lg" href="#/home">🍲 FoodBridge <span>AI</span></a>
+<nav class="lk"><a href="#/problem">The Problem</a><a href="#/product">Product</a><a href="#/features">Features</a><a href="#/case">Case Study</a><a href="#/plans">Plans</a><a href="#/faq">FAQ</a><a href="#/platform">Live Platform</a></nav>
+<a class="bt hd-d" href="#/contact">Book a Demo</a><button class="ib" title="Toggle theme" onclick="tg()">🌓</button><button class="ib" title="Menu" onclick="document.body.classList.add('op')">☰</button></div></header>
+<div id="ov" onclick="closeD()"></div>
+<aside id="dr"><div style="display:flex;justify-content:space-between;align-items:center"><b>Menu</b><button class="ib" onclick="closeD()">✕</button></div>
+<h4>Choose theme</h4><div class="th"><button data-t="auto" onclick="th('auto')">🖥️ Auto</button><button data-t="light" onclick="th('light')">☀️ Light</button><button data-t="dark" onclick="th('dark')">🌙 Dark</button><button data-t="leaf" onclick="th('leaf')">🌿 Leaf</button></div>
+<h4>Explore</h4><a href="#/home">Home</a><a href="#/problem">The Problem</a><a href="#/product">Product</a><a href="#/features">Features</a><a href="#/case">Case Study</a><a href="#/plans">Plans</a><a href="#/faq">FAQ</a><a href="#/platform">⚡ Live Platform</a>
+<h4>Get in touch</h4><a href="#/contact">📞 Contact us</a><a href="#/contact">📅 Book a free demo</a></aside>
+<main id="m"></main>
+<footer><div class="fi"><div><b>🍲 FoodBridge AI</b><p>AI-powered food redistribution for restaurants, retailers and NGOs.</p></div>
+<div><b>Platform</b><a href="#/product">Product</a><a href="#/features">Features</a><a href="#/plans">Plans</a><a href="#/platform">Live Platform</a></div>
+<div><b>Company</b><a href="#/case">Case Study</a><a href="#/faq">FAQ</a><a href="#/contact">Contact</a></div>
+<div><b>Contact</b><p>hello@foodbridge-demo.in<br>+91 90000 12345<br>Plot 21, Tech Park Road, Phase 2, Coimbatore, Tamil Nadu 641001</p></div></div>
+<p style="max-width:1150px;margin:18px auto 0">© 2026 FoodBridge AI · Academic prototype — all names, numbers and addresses are fictional.</p></footer>
+<script>
+const $=s=>document.querySelector(s);
+//CORE-START
+const N={D:["Central Depot","depot",0,0],J1:["Junction 1","junction",4,1],J2:["Junction 2","junction",8,-2],J3:["Junction 3","junction",6,6],J4:["Junction 4","junction",2,5],RA:["Restaurant A","donor",3,2],BB:["Bakery B","donor",7,1],GC:["Grocery C","donor",9,5],RD:["Restaurant D","donor",1,6],CE:["Cafe E","donor",11,-1],HF:["Hotel F","donor",5,-1],R1:["Hope Shelter","recipient",4,4],R2:["Saint Peter’s Haven","recipient",12,6],R3:["Community Kitchen","recipient",6,-3],R4:["Our Mission","recipient",2,9]};
+const E="D-RA D-J1 D-J4 RA-J1 RA-R1 J1-BB J1-J2 J1-J3 J1-HF BB-J2 BB-GC HF-J2 J2-R3 J2-CE J3-R1 J3-GC J3-J4 J4-RD J4-R1 J4-R4 GC-R2 CE-R2 RD-R4".split(" ").map(e=>e.split("-"));
+const SLOW={"J1-J3":1.7,"J2-R3":1.5},SP=30,ST=.1,CH=10;
+const ew=(a,b)=>Math.round(Math.hypot(N[a][2]-N[b][2],N[a][3]-N[b][3])*(SLOW[a+"-"+b]||SLOW[b+"-"+a]||1.25)*100)/100;
+const adj={};Object.keys(N).forEach(k=>adj[k]=[]);E.forEach(([a,b])=>{const w=ew(a,b);adj[a].push([b,w]);adj[b].push([a,w])});
+const H=(a,b)=>Math.hypot(N[a][2]-N[b][2],N[a][3]-N[b][3]),RC={};
+function route(s,g){const k=s+g;if(RC[k])return RC[k];const best={[s]:0},par={},cl=new Set(),pq=[[H(s,g),0,s]];
+ while(pq.length){pq.sort((x,y)=>x[0]-y[0]);const[,gc,n]=pq.shift();if(cl.has(n))continue;cl.add(n);
+  if(n===g){const p=[n];let c=n;while(par[c]){c=par[c];p.unshift(c)}return RC[k]={p,d:gc}}
+  for(const[m,w]of adj[n]){const ng=gc+w;if(ng<(best[m]??1e9)){best[m]=ng;par[m]=n;pq.push([ng+H(m,g),ng,m])}}}return RC[k]={p:[],d:1e9}}
+const dist=(a,b)=>route(a,b).d;
+const fresh=()=>({lots:[["L1","Restaurant A","RA",40,"cooked",2],["L2","Bakery B","BB",25,"bread",5],["L3","Grocery C","GC",30,"fruit",6],["L4","Restaurant D","RD",20,"cooked",3],["L5","Cafe E","CE",15,"bread",4]].map(([id,donor,node,q,t,x])=>({id,donor,node,q,t,x})),
+recs:[["R1","Hope Shelter",80,40,["cooked","bread","fruit"]],["R2","Saint Peter’s Haven",60,0,["cooked","bread","fruit"]],["R3","Community Kitchen",50,10,["cooked","bread"]],["R4","Our Mission",40,20,["bread","fruit"]]].map(([id,name,need,got,acc])=>({id,name,node:id,need,got,acc,on:1})),
+veh:[["V1",50],["V2",40],["V3",30]].map(([id,cap])=>({id,cap,node:"D",on:1,free:0})),time:0,done:[],total:130,obj:"Fair",log:[],plan:null});
+function ev(l,r,q,v,fr){const[vn,t0]=fr[v.id],a=route(vn,l.node),b=route(l.node,r.node),td=t0+a.d/SP+ST+b.d/SP+ST;
+ return{lot:l.id,donor:l.donor,rid:r.id,rn:r.name,q,v:v.id,pn:l.node,dn:r.node,dl:l.x,td,d:a.d+b.d,path:[...a.p,...b.p.slice(1)],s:td<=l.x+1e-9?"ok":"late",why:""}}
+const reach=(l,r,vs,now)=>vs.some(v=>Math.max(now,v.free)+dist(v.node,l.node)/SP+ST+dist(l.node,r.node)/SP+ST<=l.x+1e-9);
+const why=(o,r,d,ra)=>o=="Fastest"?`Fastest: ${r.name} is the nearest feasible recipient (${d.d.toFixed(1)} km trip); ${d.v} arrives earliest (${d.td.toFixed(2)}h ≤ ${d.dl}h).`:`Fair: ${r.name} was ${Math.round(ra*100)}% unmet when planning, so it gets priority over better-served sites; ${d.v} arrives at ${d.td.toFixed(2)}h (deadline ${d.dl}h).`;
+const frm=(S,vs)=>Object.fromEntries(vs.map(v=>[v.id,[v.node,Math.max(S.time,v.free)]]));
+function plan(S,o){if(o=="Baseline")return base(S);
+ const vs=S.veh.filter(v=>v.on),rc=Object.fromEntries(S.recs.map(r=>[r.id,r])),un={},r0={},al={},ua=[];
+ S.recs.filter(r=>r.on).forEach(r=>{un[r.id]=r.need-r.got;r0[r.id]=un[r.id]/r.need});
+ for(const l of S.lots.filter(l=>l.q>0).sort((a,b)=>a.x-b.x)){let rem=l.q;
+  while(rem>0){let bs=null;
+   for(const id in un){const r=rc[id];if(un[id]<=0||!r.acc.includes(l.t)||!reach(l,r,vs,S.time))continue;
+    const d=dist(l.node,r.node),sc=o=="Fastest"?-d:10*un[id]/r.need-.12*d;if(!bs||sc>=bs[0])bs=[sc,id]}
+   if(!bs){ua.push({lot:l.id,donor:l.donor,q:rem,why:`No active recipient with unmet need that accepts ${l.t} can be reached before the ${l.x.toFixed(1)}h deadline.`});break}
+   const id=bs[1],q=Math.min(CH,rem,un[id]),k=l.id+"|"+id;al[k]=(al[k]||0)+q;un[id]-=q;rem-=q}}
+ const fr=frm(S,vs),mc=Math.max(0,...vs.map(v=>v.cap)),lo=Object.fromEntries(S.lots.map(l=>[l.id,l])),pc=[];
+ for(const k in al){const[li,ri]=k.split("|");let q=al[k];while(q>0){const t=mc?Math.min(q,mc):q;pc.push([lo[li],rc[ri],t]);q-=t}}
+ pc.sort((a,b)=>a[0].x-b[0].x||(a[0].id<b[0].id?-1:1));
+ const d=pc.map(([l,r,q])=>{let b=null;for(const v of vs){if(v.cap<q)continue;const e=ev(l,r,q,v,fr);if(e.s=="ok"&&(!b||e.td<b.td))b=e}
+  if(b){fr[b.v]=[b.dn,b.td];b.why=why(o,r,b,r0[r.id]);return b}
+  return{lot:l.id,donor:l.donor,rid:r.id,rn:r.name,q,v:"-",pn:l.node,dn:r.node,dl:l.x,td:0,d:0,path:[],s:"failed",why:`AT RISK: no available vehicle can reach ${r.name} before the ${l.x.toFixed(1)}h deadline.`}});
+ return{d,ua,o}}
+function base(S){const vs=S.veh.filter(v=>v.on),un={},rc={},fr=frm(S,vs),d=[],ua=[];let i=0;
+ S.recs.filter(r=>r.on).forEach(r=>{un[r.id]=r.need-r.got;rc[r.id]=r});
+ for(const l of S.lots.filter(l=>l.q>0)){let rem=l.q;
+  for(const id of Object.keys(un).sort((a,b)=>dist(l.node,rc[a].node)-dist(l.node,rc[b].node))){const r=rc[id];if(!rem)break;if(un[id]<=0||!r.acc.includes(l.t))continue;
+   let q=Math.min(rem,un[id]);un[id]-=q;rem-=q;
+   while(q>0&&vs.length){const v=vs[i++%vs.length],t=Math.min(q,v.cap),e=ev(l,r,t,v,fr);e.why="Baseline: nearest recipient, input order, no deadline check.";fr[v.id]=[e.dn,e.td];d.push(e);q-=t}}
+  if(rem>0)ua.push({lot:l.id,donor:l.donor,q:rem,why:"No recipient left with unmet need."})}
+ return{d,ua,o:"Baseline"}}
+function met(S,P){const ok=P.d.filter(d=>d.s=="ok"),g={};ok.forEach(d=>g[d.rid]=(g[d.rid]||0)+d.q);
+ const ac=S.recs.filter(r=>r.on),ra=ac.map(r=>Math.min(1,(r.got+(g[r.id]||0))/r.need)),sq=ra.reduce((a,x)=>a+x*x,0),sm=ra.reduce((a,x)=>a+x,0),dl=S.done.reduce((a,d)=>a+d.q,0)+ok.reduce((a,d)=>a+d.q,0);
+ return{km:+[...S.done,...P.d].reduce((a,d)=>a+d.d,0).toFixed(1),ok:dl,waste:S.total-dl,unmet:ac.reduce((a,r)=>a+Math.max(0,r.need-r.got-(g[r.id]||0)),0),jain:sq?+(sm*sm/(ac.length*sq)).toFixed(3):0,min:ra.length?+(100*Math.min(...ra)).toFixed(1):0}}
+function freeze(S,T){if(S.plan)S.plan.d.forEach(d=>{if(d.s=="ok"&&d.td<=T+1e-9){d.s="done";S.done.push(d);S.lots.find(l=>l.id==d.lot).q-=d.q;S.recs.find(r=>r.id==d.rid).got+=d.q;const v=S.veh.find(v=>v.id==d.v);v.node=d.dn;v.free=d.td}});S.time=T}
+function km(P){const m={};P.d.forEach(d=>{if(d.s=="ok"||d.s=="failed"){const k=[d.lot,d.rid,d.s].join("|");m[k]=m[k]||{q:0,v:new Set()};m[k].q+=d.q;m[k].v.add(d.v)}});return m}
+function diff(o,n){if(!o)return[];const a=km({d:o.d.filter(d=>d.s!="done")}),b=km(n),m=[];
+ for(const k of[...new Set([...Object.keys(a),...Object.keys(b)])].sort()){const[l,r,s]=k.split("|"),A=a[k],B=b[k];
+  if(A&&B){const va=[...A.v].sort().join("/"),vb=[...B.v].sort().join("/");if(va!=vb)m.push(`${l}→${r}: vehicle ${va} replaced by ${vb}.`);else if(A.q!=B.q)m.push(`${l}→${r}: quantity ${A.q} → ${B.q}.`)}
+  else if(B)m.push(`${B.q} portions ${l}→${r} ${s=="failed"?"now AT RISK (deadline cannot be met)":"newly planned"}.`);
+  else m.push(`${A.q} portions ${l}→${r} ${s=="failed"?"no longer at risk":"dropped from plan"}.`)}
+ return m.length>8?[...m.slice(0,8),`…and ${m.length-8} more changes.`]:m}
+function replan(S,o,e,T){const old=S.plan,s=structuredClone(S);T=Math.max(T??s.time,s.time);freeze(s,T);const m=[],t0=`EVENT t=${T.toFixed(2)}h: `;
+ if(e){if(e.t=="bd"){const v=s.veh.find(v=>v.id==e.id);v.on=0;m.push(t0+`vehicle ${v.id} broke down; its undelivered food returns to the pool.`)}
+  else if(e.t=="cx"){const r=s.recs.find(r=>r.id==e.id);r.on=0;m.push(t0+`${r.name} can no longer accept deliveries.`)}
+  else{const l={id:"L"+(s.lots.length+1),donor:"Hotel F (urgent)",node:"HF",q:30,t:"cooked",x:T+1.5};s.lots.push(l);s.total+=30;m.push(t0+`urgent donation — 30 cooked portions at Hotel F, deadline ${l.x.toFixed(2)}h.`)}}
+ s.obj=o;s.plan=plan(s,o);m.push(...diff(old,s.plan));const rk=s.plan.d.filter(d=>d.s=="failed").reduce((a,d)=>a+d.q,0);
+ m.push(`New plan (${o}): ${s.plan.d.length} deliveries, ${rk} portions at risk.`);s.log=[...S.log,...m];return s}
+//CORE-END
+let S=fresh(),TT=.5;S.plan=plan(S,"Fair");
+/* ---------- theme + drawer ---------- */
+let cur="auto";
+function th(t){cur=t;const h=document.documentElement;t=="auto"?h.removeAttribute("data-theme"):h.setAttribute("data-theme",t);try{localStorage.setItem("fb-theme",t)}catch(e){}document.querySelectorAll(".th button").forEach(b=>b.classList.toggle("on",b.dataset.t==t))}
+const tg=()=>th((cur=="dark"||(cur=="auto"&&matchMedia("(prefers-color-scheme:dark)").matches))?"light":"dark");
+const closeD=()=>document.body.classList.remove("op");
+try{th(localStorage.getItem("fb-theme")||"auto")}catch(e){th("auto")}
+/* ---------- helpers ---------- */
+const cards=a=>`<div class="g">${a.map(([i,t,d])=>`<div class="cd rv"><b class="ic">${i}</b><h3>${t}</h3><p>${d}</p></div>`).join("")}</div>`;
+const hero=(k,t,s,x="")=>`<section class="hr"><div class="bl" style="width:300px;height:300px;background:var(--ac);right:0;top:20px"></div><div class="bl" style="width:220px;height:220px;background:var(--ac2);right:200px;top:160px;animation-delay:-4s"></div><small>${k}</small><h1>${t}</h1><p>${s}</p>${x}</section>`;
+const stat=(n,s,l)=>`<div class="cd rv"><b data-n="${n}" data-s="${s}">0${s}</b><span class="mu" style="font-size:14px">${l}</span></div>`;
+const demo=()=>`<div class="cd form" id="df"><h3>Book a free demo</h3><p class="sm">A free demo is a 30-minute live walkthrough with our team on your own scenario — no payment, no card.</p><input id="dn" placeholder="Your name"><input id="dm" inputmode="tel" placeholder="Mobile number (10 digits)"><button class="bt" style="width:100%" onclick="bk()">Book my free demo</button><p id="dres"></p></div>`;
+function bk(){const n=$("#dn").value.trim(),m=$("#dm").value.replace(/[\s-]/g,"").replace(/^(\+91|0)/,""),r=$("#dres");
+ if(n.length<2)return r.innerHTML='<span class="er">Please enter your name.</span>';
+ if(!/^[6-9]\d{9}$/.test(m))return r.innerHTML='<span class="er">Enter a valid 10-digit Indian mobile number (starts with 6–9).</span>';
+ const d=new Date(Date.now()+864e5);$("#df").innerHTML=`<div class="okc">✓</div><h3>Demo booked, ${n.split(" ")[0]}!</h3><p class="mu" style="font-size:15px">Confirmation sent to +91 ${m.slice(0,2)}XXXXXX${m.slice(-2)}.<br>Slot: <b>${d.toDateString()}, 11:00 AM</b> · Ref FB-${Math.floor(1000+Math.random()*9000)}</p>`}
+const cta=()=>`<section class="cta rv"><div><h2>Ready to Eliminate Food Waste?</h2><p>Book a personalized demo and see how FoodBridge AI turns surplus into meals — or start a free trial.</p><ul><li>Go live in days with managed onboarding</li><li>No credit card required for free trial</li><li>Continuous support tailored to your network</li><li>Data setup handled by our team</li></ul></div>${demo()}</section>`;
+const steps=a=>a.map(([t,d],i)=>`<div class="cd rv stp" style="margin:12px 0"><i>${i+1}</i><div><h3>${t}</h3><p>${d}</p></div></div>`).join("");
+/* ---------- pages ---------- */
+const home=()=>hero("Intelligent food redistribution","Surplus food. Hungry communities. <span style='color:var(--ac)'>One smart network.</span>","FoodBridge AI matches surplus from restaurants, bakeries and stores with the people who need it — before it spoils — and replans in seconds when something goes wrong.",
+`<div class="sp"><a class="bt" href="#/contact">Book a free demo</a><a class="bt o" href="#/platform">Try the live platform →</a></div>
+<svg class="hv" viewBox="0 0 420 220"><g stroke="var(--ac)" stroke-width="2" fill="none" stroke-dasharray="5 6"><path id="p1" d="M50 40C150 40 150 110 210 110S320 60 370 50"/><path id="p2" d="M50 110H370"/><path id="p3" d="M50 180C150 180 160 120 210 110S320 170 370 175"/></g>
+${["p1","p2","p3"].map((p,i)=>`<circle r="6" fill="var(--ac2)"><animateMotion dur="${3+i}s" repeatCount="indefinite"><mpath href="#${p}"/></animateMotion></circle>`).join("")}
+<g font-size="22" text-anchor="middle"><circle cx="40" cy="40" r="22" fill="var(--cd)" stroke="var(--ln)"/><text x="40" y="48">🍽️</text><circle cx="40" cy="110" r="22" fill="var(--cd)" stroke="var(--ln)"/><text x="40" y="118">🥖</text><circle cx="40" cy="180" r="22" fill="var(--cd)" stroke="var(--ln)"/><text x="40" y="188">🍎</text>
+<circle cx="210" cy="110" r="30" fill="var(--ac)"/><text x="210" y="118">🧠</text><circle cx="380" cy="50" r="22" fill="var(--cd)" stroke="var(--ln)"/><text x="380" y="58">🏠</text><circle cx="380" cy="110" r="22" fill="var(--cd)" stroke="var(--ln)"/><text x="380" y="118">🍲</text><circle cx="380" cy="175" r="22" fill="var(--cd)" stroke="var(--ln)"/><text x="380" y="183">🤝</text></g></svg>`)
++`<div class="st">${stat(33,"%+","of food is estimated lost or wasted")}${stat(5,"","core AI steps, fully explainable")}${stat(3,"","objectives: Fair, Fastest, Baseline")}${stat(60,"s","to replan after a breakdown")}</div>
+<h2 class="rv">Built for the messy real world</h2>`+cards([["⚖️","Fairness-aware allocation","Food goes where unmet need is highest, not just where the truck is closest."],["🗺️","A* route planning","Deadline-aware routes over the road network, with ETAs for every drop-off."],["🔄","Instant replanning","Vehicle breaks down? Recipient cancels? The plan rebuilds itself and explains what changed."]])+cta();
+const problem=()=>hero("The Problem","Your Food Network Is a Network, Not a Straight Line","Surplus and hunger exist side by side — they just never meet in time. Every hand-off is manual, every delay costs food.")+cards([["📵","Network Chaos","Was it picked up? Was it received? WhatsApp threads replace a single source of truth."],["⏳","Perishable Clock","Cooked meals and bread can’t wait. Late pickup means waste, not a delay."],["📉","Error Compounding","One wrong headcount at a shelter distorts every plan upstream."],["📝","Duplicated Manual Work","Every donor and NGO re-does the same calls, sheets and dispatch."],["🙈","Zero Visibility","Nobody sees who donated, who received, and what never arrived."],["🚧","Bottlenecks & Breakdowns","One broken vehicle or cancelled drop-off derails the whole day."]])+
+`<h2 class="rv">The Real Question: Who Can You Trust?</h2><div class="cd rv"><ul style="color:var(--mu)"><li>Food dispatched, but the shelter says it never arrived</li><li>Donor lists 40 portions, driver delivers 32 — who explains the gap?</li><li>Nearest shelter gets everything while a farther one gets nothing</li><li>Plans made on this morning’s list — the situation already changed</li><li>Volunteers checking paper slips at the gate for half an hour</li></ul></div>`+cta();
+const product=()=>hero("Product","One Platform for Every Node in the Chain","Donors, drivers and recipients all do the same five things. FoodBridge AI digitizes every one of them.")+steps([["Donation Intake","Donors list surplus in seconds: food type, portions, pickup spot and expiry deadline."],["Constraint-based Matching","The AI checks recipient demand, food type, vehicle capacity and deadlines before assigning anything."],["A* Route Planning","Each vehicle gets the lowest-cost route with ETAs, checked against every expiry time."],["PIN-based Delivery","Recipients confirm with a PIN — instant proof, no paper slips."],["Dynamic Replanning","Breakdowns, cancellations and urgent donations trigger a fresh plan with a plain-English change log."]])+cards([["🚀","Go Live in Days","We handle setup, training and launch. No technical team needed."],["🤝","A Network, Not Just Software","Donors and NGOs discover each other on one trusted network."],["💬","Mobile-First + WhatsApp","OTP login and order alerts on the tools your team already uses."]])+cta();
+const features=()=>hero("Features","Everything You Need to Rescue Food, Digitally","From donation intake to fairness analytics — one platform with dedicated support at every step.")+cards([["📥","Track Donations","Capture every lot with food type, portions and deadline. Search fast, filter by urgency."],["🧮","Smart Allocation","Greedy heuristic with hard constraints: demand, diet, capacity, expiry."],["⚖️","Fair Distribution Mode","Balance distance against unmet need, with Jain’s fairness index as proof."],["🚚","Route Optimization","A* search on the road graph, compared live against Dijkstra."],["🔄","Disruption Simulator","Breakdown, cancellation or urgent donation — replan with one click."],["📊","AI vs Baseline Dashboard","Distance, on-time portions, unmet demand and fairness, side by side."],["🔐","PIN Delivery Proof","Password-less confirmation for every drop-off."],["🧠","Explainable Decisions","Every assignment ships with a one-line reason a human can read."]])+cta();
+const cs=()=>hero("Case Study","How Annapurna Kitchens Rescued 1,200 Meals a Week","A community kitchen network in Hyderabad replaced WhatsApp coordination with FoodBridge AI in under two weeks. (Illustrative case study, synthetic numbers.)")+
+`<div class="st">${stat(1200,"","meals rescued per week")}${stat(62,"%","less surplus wasted")}${stat(8,"h","daily coordination work saved")}${stat(35,"%","shorter delivery distance")}</div>
+<h2 class="rv">Before and after</h2><div class="ba"><div class="cd bad rv"><h3>Before FoodBridge AI</h3><ul><li>Donors posted surplus in WhatsApp groups</li><li>Volunteers phoned shelters one by one</li><li>Routes planned by memory every evening</li><li>Nearest shelter always got the food</li><li>A breakdown meant cancelled deliveries</li><li>Nobody could prove what was delivered</li></ul></div>
+<div class="cd gd rv"><h3>After FoodBridge AI</h3><ul><li>One donation form, with expiry deadlines</li><li>Automatic matching in seconds</li><li>A* routes with ETAs for every vehicle</li><li>Fair mode balances need across shelters</li><li>Breakdown? Auto-replan in under a minute</li><li>PIN confirmations and a full audit trail</li></ul></div></div>`+cta();
+const plans=()=>hero("Plans","Pay for impact, not paperwork","Free for NGOs. Simple pricing for everyone else. 14-day free trial on every paid plan.")+
+`<div class="g">${[["Community","₹0","for NGOs & shelters",["Receive donations & alerts","Basic dashboard","WhatsApp notifications"],"Start free"],["Business","₹2,499","for restaurants, caterers & retailers",["Everything in Community","Smart matching & A* routing","Waste & impact reports","Priority support"],"Start 14-day trial",1],["Network","Custom","for city-scale operations",["Everything in Business","Fair-mode analytics","Multi-city fleets","API & ERP integration"],"Talk to us"]].map(([n,p,s,f,b,h])=>`<div class="cd rv ${h?"hot":""}">${h?"<small style='color:var(--ac);font-weight:700'>MOST POPULAR</small>":""}<h3>${n}</h3><div class="pr">${p}<small>${p[0]=="₹"?" / month":""}</small></div><p>${s}</p><ul style="color:var(--mu);padding-left:18px">${f.map(x=>`<li>${x}</li>`).join("")}</ul><a class="bt ${h?"":"o"}" style="display:block;text-align:center" href="#/contact">${b}</a></div>`).join("")}</div>`+cta();
+const faq=()=>hero("FAQ","Frequently Asked Questions","Quick answers about how FoodBridge AI works.")+[["What is FoodBridge AI?","An AI planning platform that matches surplus food with recipients, routes vehicles, and replans when disruptions happen."],["Does it use machine learning?","The core planner uses classical AI: constraint checking, greedy heuristics, A* search and goal-based replanning, so every decision is explainable."],["How does Fair mode work?","It scores each recipient by unmet need and distance, so a far-away shelter with nothing isn’t ignored in favor of a nearby one that is mostly served."],["What happens if a vehicle breaks down?","Completed deliveries stay final. The undelivered food returns to the pool and the AI rebuilds the plan, flagging anything now at risk."],["How is food safety handled?","Every lot has an expiry deadline and a delivery is only planned if it can arrive in time. Real deadlines depend on food type and handling conditions."],["What is a free demo?","A 30-minute live walkthrough with our team using your own scenario. It costs nothing and needs no card."],["Is the data real?","This is an academic prototype running on synthetic data."]].map(([q,a])=>`<details class="rv"><summary>${q}</summary><p>${a}</p></details>`).join("")+cta();
+const contact=()=>hero("Contact us","Let’s talk about your food network","Book a demo or reach us directly. We usually reply within one working day.")+`<div class="g">${demo()}<div class="cd"><h3>Reach us</h3><p>📧 hello@foodbridge-demo.in<br>📞 +91 90000 12345 (24×7 support)<br>📍 Plot 21, Tech Park Road, Phase 2, Coimbatore, Tamil Nadu 641001</p></div></div>`;
+const platform=()=>hero("Live Platform","The AI planner, running in your browser","Switch objectives, trigger disruptions and watch the plan rebuild. Same logic as the Python project, ported to JavaScript.")+'<div id="pl"></div>';
+/* ---------- live platform ---------- */
+const tb=(h,r)=>`<div class="tw"><table><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr>${r.map(x=>`<tr>${x.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</table></div>`;
+function draw(){const P=S.plan,m=met(S,P),all=[...S.done,...P.d],rk=P.d.filter(d=>d.s=="failed").reduce((a,d)=>a+d.q,0)+P.ua.reduce((a,u)=>a+u.q,0),g={};
+ P.d.forEach(d=>d.s=="ok"&&(g[d.rid]=(g[d.rid]||0)+d.q));
+ const sx=x=>(x+1.5)*44,sy=y=>(10.5-y)*44,VC={V1:"#2563eb",V2:"#16a34a",V3:"#9333ea"},KC={depot:"#111",junction:"#9aa6a0",donor:"#f59e0b",recipient:"#06b6d4"},pt=k=>sx(N[k][2])+","+sy(N[k][3]);
+ let svg=E.map(([a,b])=>`<polyline points="${pt(a)} ${pt(b)}" stroke="var(--ln)" stroke-width="3"/>`).join("");
+ all.forEach(d=>{svg+=d.s=="failed"?`<polyline points="${pt(d.pn)} ${pt(d.dn)}" stroke="#dc2626" stroke-width="3" stroke-dasharray="6 5"/>`:`<polyline fill="none" points="${d.path.map(pt).join(" ")}" stroke="${VC[d.v]}" stroke-width="${d.s=="done"?2:4}" stroke-dasharray="${d.s=="done"?"2 5":""}" opacity=".8"/>`});
+ for(const k in N){const[nm,kd]=N[k],x=sx(N[k][2]),y=sy(N[k][3]),off=S.recs.some(r=>r.node==k&&!r.on);
+  svg+=`<circle cx="${x}" cy="${y}" r="${kd=="junction"?5:10}" fill="${off?"#dc2626":KC[kd]}" stroke="var(--fg)" stroke-width="1"/>${kd=="junction"?"":`<text x="${x}" y="${y-14}" text-anchor="middle" font-size="11" fill="var(--fg)">${off?"✖ ":""}${nm}</text>`}`}
+ S.veh.forEach((v,i)=>svg+=`<text x="${sx(N[v.node][2])+14}" y="${sy(N[v.node][3])+14+i*12}" font-size="11" font-weight="700" fill="${v.on?VC[v.id]:"#dc2626"}">${v.on?"▲":"✖"}${v.id}</text>`);
+ const av=S.veh.filter(v=>v.on),ac=S.recs.filter(r=>r.on),op=a=>a.map(x=>`<option value="${x.id}">${x.name||x.id}</option>`).join("");
+ $("#pl").innerHTML=`<div class="ct"><b>Objective</b><select onchange="so(this.value)">${["Fair","Fastest"].map(o=>`<option ${S.obj==o?"selected":""}>${o}</option>`).join("")}</select><b>Disruption at t=</b><input type="range" min="0" max="3" step=".25" value="${TT}" oninput="TT=+this.value;this.nextElementSibling.textContent=TT+'h'"><span>${TT}h</span><button class="bt o" onclick="rs()">Reset</button></div>
+<div class="ct"><select id="sv">${op(av)}</select><button class="bt" ${av.length?"":"disabled"} onclick="ee('bd')">Vehicle Breakdown</button><select id="sr">${op(ac)}</select><button class="bt" ${ac.length?"":"disabled"} onclick="ee('cx')">Cancel Recipient</button><button class="bt" onclick="ee('ur')">Urgent Donation</button></div>
+<div class="mt"><div>Objective<b>${S.obj}</b></div><div>Time<b>${S.time.toFixed(2)}h</b></div><div>On-time portions<b>${m.ok}</b></div><div>At risk / wasted<b style="color:${rk?"var(--bd)":"inherit"}">${rk}</b></div><div>Fairness (Jain)<b>${m.jain}</b></div><div>Distance<b>${m.km} km</b></div></div>
+<svg class="mp" viewBox="0 0 640 560">${svg}</svg><p class="sm">Solid = planned A* route · dotted = completed · red dashed = deadline at risk · ✖ = cancelled recipient / broken vehicle</p>
+<h3>What the AI changed</h3>${S.log.length?`<ul class="sm">${S.log.slice(-12).reverse().map(x=>`<li>${x}</li>`).join("")}</ul>`:'<p class="sm">No disruption yet — trigger one above.</p>'}
+<h3>AI vs Baseline (current state)</h3>${tb(["Plan","Distance km","On-time","Wasted","Unmet","Jain","Min fulfilment %"],["Baseline","Fastest","Fair"].map(o=>{const x=met(S,plan(S,o));return[o,x.km,x.ok,x.waste,x.unmet,x.jain,x.min]}))}
+<h3>Food lots</h3>${tb(["Lot","Donor","Food","Remaining","Planned on time","At risk","Deadline","Status"],S.lots.map(l=>{const ok=P.d.filter(d=>d.lot==l.id&&d.s=="ok").reduce((a,d)=>a+d.q,0),r=P.d.filter(d=>d.lot==l.id&&d.s=="failed").reduce((a,d)=>a+d.q,0)+P.ua.filter(u=>u.lot==l.id).reduce((a,u)=>a+u.q,0);return[l.id,l.donor,l.t,l.q,ok,r,l.x.toFixed(2)+"h",l.q==0?"Delivered":r?"At risk":"Planned"]}))}
+<h3>Recipients</h3>${tb(["Recipient","Need","Received","Planned","Unmet after plan","Active"],S.recs.map(r=>[r.name,r.need,r.got,g[r.id]||0,Math.max(0,r.need-r.got-(g[r.id]||0)),r.on?"yes":"CANCELLED"]))}
+<h3>Plan & explanations</h3>${tb(["Vehicle","Lot","To","Portions","Arrives","Deadline","Status","Why"],[...all].sort((a,b)=>a.v<b.v?-1:a.v>b.v?1:a.td-b.td).map(d=>[d.v,d.lot,d.rn,d.q,d.s=="failed"?"—":d.td.toFixed(2)+"h",d.dl.toFixed(2)+"h",d.s.toUpperCase(),d.why]))}
+${P.ua.map(u=>`<p class="er">${u.q} portions from ${u.donor} (${u.lot}) unallocated: ${u.why}</p>`).join("")}`}
+const so=v=>{S=replan(S,v);draw()},rs=()=>{S=fresh();S.plan=plan(S,"Fair");draw()},
+ ee=t=>{S=replan(S,S.obj,t=="bd"?{t,id:$("#sv").value}:t=="cx"?{t,id:$("#sr").value}:{t},TT);draw()};
+/* ---------- router ---------- */
+const R={home,problem,product,features,case:cs,plans,faq,contact,platform};
+function cnt(e){const n=+e.dataset.n,s=e.dataset.s,t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/1400);e.textContent=Math.round(n*(1-Math.pow(1-p,3)))+s;if(p<1)requestAnimationFrame(f)})(t0)}
+function obs(){const o=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");if(e.target.dataset.n)cnt(e.target);o.unobserve(e.target)}}),{threshold:.15});document.querySelectorAll(".rv,[data-n]").forEach(x=>o.observe(x))}
+function go(){let r=location.hash.replace("#/","")||"home";if(!R[r])r="home";$("#m").innerHTML=R[r]();document.querySelectorAll(".lk a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")=="#/"+r));scrollTo(0,0);closeD();obs();if(r=="platform")draw()}
+addEventListener("hashchange",go);go();
+</script></body></html>
