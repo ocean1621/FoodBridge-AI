@@ -50,7 +50,7 @@ footer{border-top:1px solid var(--ln);padding:34px 18px;color:var(--mu);font-siz
 .tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px;background:var(--cd);border-radius:12px}th,td{padding:7px 10px;border-bottom:1px solid var(--ln);text-align:left;vertical-align:top}th{color:var(--mu);font-weight:600}
 .ct{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}.ct select,.ct input[type=range]{padding:8px;border-radius:10px;border:1.5px solid var(--ln);background:var(--cd);color:var(--fg);font:inherit}
 .mt{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:12px 0}.mt div{background:var(--cd);border:1px solid var(--ln);border-radius:14px;padding:10px 14px}.mt b{font-size:22px;display:block}
-.mp{width:100%;max-height:560px;background:var(--cd);border:1px solid var(--ln);border-radius:16px}.sm{font-size:13px;color:var(--mu)}
+.mp{width:100%;max-height:560px;background:var(--cd);border:1px solid var(--ln);border-radius:16px}.sm{font-size:13px;color:var(--mu)}.ip input,.ip select{padding:6px 8px;border-radius:8px;border:1.5px solid var(--ln);background:var(--bg);color:var(--fg);font:inherit;font-size:13px}.ip label{font-size:13px;margin-right:8px;white-space:nowrap}.ip:hover{transform:none;box-shadow:none}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body>
 <header><div class="nv"><a class="lg" href="#/home">🍲 FoodBridge <span>AI</span></a>
@@ -81,7 +81,7 @@ function route(s,g){const k=s+g;if(RC[k])return RC[k];const best={[s]:0},par={},
   if(n===g){const p=[n];let c=n;while(par[c]){c=par[c];p.unshift(c)}return RC[k]={p,d:gc}}
   for(const[m,w]of adj[n]){const ng=gc+w;if(ng<(best[m]??1e9)){best[m]=ng;par[m]=n;pq.push([ng+H(m,g),ng,m])}}}return RC[k]={p:[],d:1e9}}
 const dist=(a,b)=>route(a,b).d;
-const fresh=()=>({lots:[["L1","Restaurant A","RA",40,"cooked",2],["L2","Bakery B","BB",25,"bread",5],["L3","Grocery C","GC",30,"fruit",6],["L4","Restaurant D","RD",20,"cooked",3],["L5","Cafe E","CE",15,"bread",4]].map(([id,donor,node,q,t,x])=>({id,donor,node,q,t,x})),
+const fresh0=()=>({lots:[["L1","Restaurant A","RA",40,"cooked",2],["L2","Bakery B","BB",25,"bread",5],["L3","Grocery C","GC",30,"fruit",6],["L4","Restaurant D","RD",20,"cooked",3],["L5","Cafe E","CE",15,"bread",4]].map(([id,donor,node,q,t,x])=>({id,donor,node,q,t,x})),
 recs:[["R1","Hope Shelter",80,40,["cooked","bread","fruit"]],["R2","Saint Peter’s Haven",60,0,["cooked","bread","fruit"]],["R3","Community Kitchen",50,10,["cooked","bread"]],["R4","Our Mission",40,20,["bread","fruit"]]].map(([id,name,need,got,acc])=>({id,name,node:id,need,got,acc,on:1})),
 veh:[["V1",50],["V2",40],["V3",30]].map(([id,cap])=>({id,cap,node:"D",on:1,free:0})),time:0,done:[],total:130,obj:"Fair",log:[],plan:null});
 function ev(l,r,q,v,fr){const[vn,t0]=fr[v.id],a=route(vn,l.node),b=route(l.node,r.node),td=t0+a.d/SP+ST+b.d/SP+ST;
@@ -131,7 +131,37 @@ function replan(S,o,e,T){const old=S.plan,s=structuredClone(S);T=Math.max(T??s.t
  s.obj=o;s.plan=plan(s,o);m.push(...diff(old,s.plan));const rk=s.plan.d.filter(d=>d.s=="failed").reduce((a,d)=>a+d.q,0);
  m.push(`New plan (${o}): ${s.plan.d.length} deliveries, ${rk} portions at risk.`);s.log=[...S.log,...m];return s}
 //CORE-END
-let S=fresh(),TT=.5;S.plan=plan(S,"Fair");
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const build=c=>({lots:c.lots.map((l,i)=>({id:'L'+(i+1),donor:esc(l.donor.trim()),node:l.node,q:l.q,t:l.t,x:l.x})),recs:c.recs.map((r,i)=>({id:'R'+(i+1),name:esc(r.name.trim()),node:r.node,need:r.need,got:r.got,acc:[...r.acc],on:1})),veh:c.veh.map((v,i)=>({id:'V'+(i+1),cap:v.cap,node:v.node,on:1,free:0})),time:0,done:[],total:c.lots.reduce((a,l)=>a+l.q,0),obj:'Fair',log:[],plan:null});
+let CUSTOM=null;const fresh=()=>CUSTOM?build(CUSTOM):fresh0();
+const toCfg=s=>({lots:s.lots.map(l=>({donor:l.donor,node:l.node,q:l.q,t:l.t,x:l.x})),recs:s.recs.map(r=>({name:r.name,node:r.node,need:r.need,got:r.got,acc:[...r.acc]})),veh:s.veh.map(v=>({cap:v.cap,node:v.node}))});
+let CFG=toCfg(fresh0()),S=fresh(),TT=.5;S.plan=plan(S,'Fair');
+/* ---------- custom input panel ---------- */
+const NO=k=>Object.keys(N).filter(x=>N[x][1]==k).map(x=>[x,N[x][0]]),ALLN=Object.keys(N).filter(x=>N[x][1]!='junction').map(x=>[x,N[x][0]]),FT=['cooked','bread','fruit'].map(t=>[t,t]);
+const lb=(k,kd,nm)=>{if(!CUSTOM||kd=='depot'||kd=='junction')return nm;const a=[...S.lots.filter(l=>l.node==k).map(l=>l.donor),...S.recs.filter(r=>r.node==k).map(r=>r.name)];return a.length?a.join(' / '):'(unused)'};
+const inp=(a,i,k,v,t,w)=>`<input type='${t}' value="${esc(v)}" style='width:${w}px' onchange="up('${a}',${i},'${k}',this.value)">`;
+const sel=(a,i,k,v,o)=>`<select onchange="up('${a}',${i},'${k}',this.value)">${o.map(([x,l])=>`<option value="${x}" ${x==v?'selected':''}>${l}</option>`).join('')}</select>`;
+const up=(a,i,k,v)=>{CFG[a][i][k]=['q','x','need','got','cap'].includes(k)?+v:v};
+const ac=(i,t,on)=>{const r=CFG.recs[i];r.acc=r.acc.filter(x=>x!=t);if(on)r.acc.push(t)};
+const dl=(a,i)=>{CFG[a].splice(i,1);drawIn()};
+const MX={lots:12,recs:8,veh:6},NEW={lots:()=>({donor:'New donor',node:'RA',q:20,t:'cooked',x:3}),recs:()=>({name:'New recipient',node:'R1',need:40,got:0,acc:FT.map(f=>f[0])}),veh:()=>({cap:30,node:'D'})};
+const ad=a=>{if(CFG[a].length<MX[a]){CFG[a].push(NEW[a]());drawIn()}};
+const xb=(a,i)=>`<button class='ib' style='width:32px;height:32px' onclick="dl('${a}',${i})">✕</button>`;
+function drawIn(){const c=CFG;$('#inp').innerHTML=`<div class='cd ip' style='margin:18px 0'><h3>① Your input</h3><p class='sm'>Type your own scenario, add rows, or hit Randomize. Locations are points on the road network. Press Run and the AI plan appears below.</p>
+<b>Food lots (donors)</b>${tb(['Donor name','Location','Portions','Food','Deadline (h)',''],c.lots.map((l,i)=>[inp('lots',i,'donor',l.donor,'text',130),sel('lots',i,'node',l.node,NO('donor')),inp('lots',i,'q',l.q,'number',70),sel('lots',i,'t',l.t,FT),inp('lots',i,'x',l.x,'number',70),xb('lots',i)]))}<button class='bt o' onclick="ad('lots')">+ Add lot</button><br><br>
+<b>Recipients (shelters)</b>${tb(['Name','Location','Need','Already received','Accepts',''],c.recs.map((r,i)=>[inp('recs',i,'name',r.name,'text',130),sel('recs',i,'node',r.node,NO('recipient')),inp('recs',i,'need',r.need,'number',70),inp('recs',i,'got',r.got,'number',70),FT.map(([t])=>`<label><input type='checkbox' ${r.acc.includes(t)?'checked':''} onchange="ac(${i},'${t}',this.checked)"> ${t}</label>`).join(''),xb('recs',i)]))}<button class='bt o' onclick="ad('recs')">+ Add recipient</button><br><br>
+<b>Vehicles</b>${tb(['Vehicle','Start location','Capacity (portions)',''],c.veh.map((v,i)=>['V'+(i+1),sel('veh',i,'node',v.node,ALLN),inp('veh',i,'cap',v.cap,'number',70),xb('veh',i)]))}<button class='bt o' onclick="ad('veh')">+ Add vehicle</button>
+<div class='ct'><button class='bt' onclick='runIn()'>▶ Run AI planner</button><button class='bt o' onclick='rz()'>🎲 Randomize &amp; run</button><button class='bt o' onclick='smp()'>Sample data</button></div><div id='ier'></div></div>`}
+function runIn(){const c=CFG,er=[],bad=(a,b)=>er.push(a+': '+b),I=n=>Number.isInteger(n);
+ if(!c.lots.length)er.push('Add at least one food lot.');if(!c.recs.length)er.push('Add at least one recipient.');if(!c.veh.length)er.push('Add at least one vehicle.');
+ c.lots.forEach((l,i)=>{const p='Lot '+(i+1);if(!l.donor.trim())bad(p,'enter a donor name');if(!(I(l.q)&&l.q>=1))bad(p,'portions must be a whole number, at least 1');if(!(l.x>0))bad(p,'deadline must be more than 0 hours')});
+ c.recs.forEach((r,i)=>{const p='Recipient '+(i+1);if(!r.name.trim())bad(p,'enter a name');if(!(I(r.need)&&r.need>=1))bad(p,'need must be a whole number, at least 1');if(!(I(r.got)&&r.got>=0&&r.got<=r.need))bad(p,'received must be a whole number between 0 and need');if(!r.acc.length)bad(p,'accept at least one food type')});
+ c.veh.forEach((v,i)=>{if(!(I(v.cap)&&v.cap>=1))bad('Vehicle '+(i+1),'capacity must be a whole number, at least 1')});
+ $('#ier').innerHTML=er.map(e=>`<div class='er'>• ${e}</div>`).join('');if(er.length)return;
+ const o=S.obj;CUSTOM=structuredClone(c);S=build(CUSTOM);S.obj=o;S.plan=plan(S,o);draw();$('#pl').scrollIntoView({behavior:'smooth'})}
+function rz(){const R=(a,b)=>Math.floor(a+Math.random()*(b-a+1)),P=a=>a[R(0,a.length-1)],sh=a=>[...a].sort(()=>Math.random()-.5),D=Object.keys(N).filter(k=>N[k][1]=='donor'),Rn=sh(Object.keys(N).filter(k=>N[k][1]=='recipient')),T=FT.map(f=>f[0]),dn=sh(['Spice Garden','Daily Bakery','Fresh Mart','Royal Hotel','Tiffin House','Green Grocers','Sweet Corner','City Canteen']),rn=sh(['Hope Shelter','Seva Kitchen','Asha Home','Care Centre','Anna Daan','Light House']);
+ CFG={lots:Array.from({length:R(3,6)},(_,i)=>({donor:dn[i],node:P(D),q:R(10,60),t:P(T),x:R(2,12)/2})),recs:Array.from({length:R(3,4)},(_,i)=>{const n=R(30,90),a=T.filter(()=>Math.random()>.35);if(!a.length)a.push(P(T));return{name:rn[i],node:Rn[i],need:n,got:R(0,Math.floor(n*.6)),acc:a}}),veh:Array.from({length:R(2,4)},()=>({cap:P([20,30,40,50]),node:'D'}))};drawIn();runIn()}
+function smp(){CUSTOM=null;CFG=toCfg(fresh0());S=fresh0();S.plan=plan(S,'Fair');drawIn();draw()}
 /* ---------- theme + drawer ---------- */
 let cur="auto";
 function th(t){cur=t;const h=document.documentElement;t=="auto"?h.removeAttribute("data-theme"):h.setAttribute("data-theme",t);try{localStorage.setItem("fb-theme",t)}catch(e){}document.querySelectorAll(".th button").forEach(b=>b.classList.toggle("on",b.dataset.t==t))}
@@ -170,16 +200,16 @@ const plans=()=>hero("Plans","Pay for impact, not paperwork","Free for NGOs. Sim
 `<div class="g">${[["Community","₹0","for NGOs & shelters",["Receive donations & alerts","Basic dashboard","WhatsApp notifications"],"Start free"],["Business","₹2,499","for restaurants, caterers & retailers",["Everything in Community","Smart matching & A* routing","Waste & impact reports","Priority support"],"Start 14-day trial",1],["Network","Custom","for city-scale operations",["Everything in Business","Fair-mode analytics","Multi-city fleets","API & ERP integration"],"Talk to us"]].map(([n,p,s,f,b,h])=>`<div class="cd rv ${h?"hot":""}">${h?"<small style='color:var(--ac);font-weight:700'>MOST POPULAR</small>":""}<h3>${n}</h3><div class="pr">${p}<small>${p[0]=="₹"?" / month":""}</small></div><p>${s}</p><ul style="color:var(--mu);padding-left:18px">${f.map(x=>`<li>${x}</li>`).join("")}</ul><a class="bt ${h?"":"o"}" style="display:block;text-align:center" href="#/contact">${b}</a></div>`).join("")}</div>`+cta();
 const faq=()=>hero("FAQ","Frequently Asked Questions","Quick answers about how FoodBridge AI works.")+[["What is FoodBridge AI?","An AI planning platform that matches surplus food with recipients, routes vehicles, and replans when disruptions happen."],["Does it use machine learning?","The core planner uses classical AI: constraint checking, greedy heuristics, A* search and goal-based replanning, so every decision is explainable."],["How does Fair mode work?","It scores each recipient by unmet need and distance, so a far-away shelter with nothing isn’t ignored in favor of a nearby one that is mostly served."],["What happens if a vehicle breaks down?","Completed deliveries stay final. The undelivered food returns to the pool and the AI rebuilds the plan, flagging anything now at risk."],["How is food safety handled?","Every lot has an expiry deadline and a delivery is only planned if it can arrive in time. Real deadlines depend on food type and handling conditions."],["What is a free demo?","A 30-minute live walkthrough with our team using your own scenario. It costs nothing and needs no card."],["Is the data real?","This is an academic prototype running on synthetic data."]].map(([q,a])=>`<details class="rv"><summary>${q}</summary><p>${a}</p></details>`).join("")+cta();
 const contact=()=>hero("Contact us","Let’s talk about your food network","Book a demo or reach us directly. We usually reply within one working day.")+`<div class="g">${demo()}<div class="cd"><h3>Reach us</h3><p>📧 hello@foodbridge-demo.in<br>📞 +91 90000 12345 (24×7 support)<br>📍 Plot 21, Tech Park Road, Phase 2, Coimbatore, Tamil Nadu 641001</p></div></div>`;
-const platform=()=>hero("Use It","The AI planner, running in your browser","Switch objectives, trigger disruptions and watch the plan rebuild. Same logic as the Python project, ported to JavaScript.")+'<div id="pl"></div>';
+const platform=()=>hero("Use It","The AI planner, running in your browser","Switch objectives, trigger disruptions and watch the plan rebuild. Same logic as the Python project, ported to JavaScript.")+'<div id="inp"></div><div id="pl"></div>';
 /* ---------- live platform ---------- */
 const tb=(h,r)=>`<div class="tw"><table><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr>${r.map(x=>`<tr>${x.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</table></div>`;
 function draw(){const P=S.plan,m=met(S,P),all=[...S.done,...P.d],rk=P.d.filter(d=>d.s=="failed").reduce((a,d)=>a+d.q,0)+P.ua.reduce((a,u)=>a+u.q,0),g={};
  P.d.forEach(d=>d.s=="ok"&&(g[d.rid]=(g[d.rid]||0)+d.q));
- const sx=x=>(x+1.5)*44,sy=y=>(10.5-y)*44,VC={V1:"#2563eb",V2:"#16a34a",V3:"#9333ea"},KC={depot:"#111",junction:"#9aa6a0",donor:"#f59e0b",recipient:"#06b6d4"},pt=k=>sx(N[k][2])+","+sy(N[k][3]);
+ const sx=x=>(x+1.5)*44,sy=y=>(10.5-y)*44,VC={V1:"#2563eb",V2:"#16a34a",V3:"#9333ea",V4:"#e11d48",V5:"#0891b2",V6:"#ca8a04"},KC={depot:"#111",junction:"#9aa6a0",donor:"#f59e0b",recipient:"#06b6d4"},pt=k=>sx(N[k][2])+","+sy(N[k][3]);
  let svg=E.map(([a,b])=>`<polyline points="${pt(a)} ${pt(b)}" stroke="var(--ln)" stroke-width="3"/>`).join("");
  all.forEach(d=>{svg+=d.s=="failed"?`<polyline points="${pt(d.pn)} ${pt(d.dn)}" stroke="#dc2626" stroke-width="3" stroke-dasharray="6 5"/>`:`<polyline fill="none" points="${d.path.map(pt).join(" ")}" stroke="${VC[d.v]}" stroke-width="${d.s=="done"?2:4}" stroke-dasharray="${d.s=="done"?"2 5":""}" opacity=".8"/>`});
  for(const k in N){const[nm,kd]=N[k],x=sx(N[k][2]),y=sy(N[k][3]),off=S.recs.some(r=>r.node==k&&!r.on);
-  svg+=`<circle cx="${x}" cy="${y}" r="${kd=="junction"?5:10}" fill="${off?"#dc2626":KC[kd]}" stroke="var(--fg)" stroke-width="1"/>${kd=="junction"?"":`<text x="${x}" y="${y-14}" text-anchor="middle" font-size="11" fill="var(--fg)">${off?"✖ ":""}${nm}</text>`}`}
+  svg+=`<circle cx="${x}" cy="${y}" r="${kd=="junction"?5:10}" fill="${off?"#dc2626":KC[kd]}" stroke="var(--fg)" stroke-width="1"/>${kd=="junction"?"":`<text x="${x}" y="${y-14}" text-anchor="middle" font-size="11" fill="var(--fg)">${off?"✖ ":""}${lb(k,kd,nm)}</text>`}`}
  S.veh.forEach((v,i)=>svg+=`<text x="${sx(N[v.node][2])+14}" y="${sy(N[v.node][3])+14+i*12}" font-size="11" font-weight="700" fill="${v.on?VC[v.id]:"#dc2626"}">${v.on?"▲":"✖"}${v.id}</text>`);
  const av=S.veh.filter(v=>v.on),ac=S.recs.filter(r=>r.on),op=a=>a.map(x=>`<option value="${x.id}">${x.name||x.id}</option>`).join("");
  $("#pl").innerHTML=`<div class="ct"><b>Objective</b><select onchange="so(this.value)">${["Fair","Fastest"].map(o=>`<option ${S.obj==o?"selected":""}>${o}</option>`).join("")}</select><b>Disruption at t=</b><input type="range" min="0" max="3" step=".25" value="${TT}" oninput="TT=+this.value;this.nextElementSibling.textContent=TT+'h'"><span>${TT}h</span><button class="bt o" onclick="rs()">Reset</button></div>
@@ -198,6 +228,7 @@ const so=v=>{S=replan(S,v);draw()},rs=()=>{S=fresh();S.plan=plan(S,"Fair");draw(
 const R={home,problem,product,features,case:cs,plans,faq,contact,platform};
 function cnt(e){const n=+e.dataset.n,s=e.dataset.s,t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/1400);e.textContent=Math.round(n*(1-Math.pow(1-p,3)))+s;if(p<1)requestAnimationFrame(f)})(t0)}
 function obs(){const o=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");if(e.target.dataset.n)cnt(e.target);o.unobserve(e.target)}}),{threshold:.15});document.querySelectorAll(".rv,[data-n]").forEach(x=>o.observe(x))}
-function go(){let r=location.hash.replace("#/","")||"home";if(!R[r])r="home";$("#m").innerHTML=R[r]();document.querySelectorAll(".lk a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")=="#/"+r));scrollTo(0,0);closeD();obs();if(r=="platform")draw()}
+function go(){let r=location.hash.replace("#/","")||"home";if(!R[r])r="home";$("#m").innerHTML=R[r]();document.querySelectorAll(".lk a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")=="#/"+r));scrollTo(0,0);closeD();obs();if(r=="platform"){drawIn();draw()}}
 addEventListener("hashchange",go);go();
 </script></body></html>
+
